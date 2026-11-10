@@ -44,6 +44,8 @@ export const translations = {
     privacyDesc: "Seluruh proses konversi berjalan langsung di browser dan RAM perangkat Anda. Web ini tidak memiliki database atau server eksternal, sehingga foto dan data pribadi Anda tidak pernah diunggah, disimpan, atau dilacak oleh pihak manapun.",
     themeToggleTitle: "Ganti Tema (Dark / Light)",
     langToggleTitle: "Ganti Bahasa",
+    avifUnsupported: "Browser Anda belum mendukung encoder AVIF langsung. Silakan gunakan Google Chrome / Microsoft Edge terbaru atau pilih format WEBP.",
+    gifUnsupported: "Browser Anda belum mendukung pembuatan GIF untuk gambar ini.",
     categories: {
       web: "Format Web & Standar Digital",
       photo: "Kamera & RAW Photography",
@@ -105,6 +107,8 @@ export const translations = {
     privacyDesc: "All image conversion runs directly in your browser's local memory (RAM). This tool operates with zero database and zero external servers, meaning your photos and personal data are never uploaded, stored, or tracked.",
     themeToggleTitle: "Toggle Theme (Dark / Light)",
     langToggleTitle: "Switch Language",
+    avifUnsupported: "Your browser does not currently support direct AVIF encoding. Please use Google Chrome / Microsoft Edge or select WEBP.",
+    gifUnsupported: "Your browser does not support GIF encoding for this image.",
     categories: {
       web: "Web & Digital Standards",
       photo: "Camera & RAW Photography",
@@ -166,6 +170,8 @@ export const translations = {
     privacyDesc: "所有图片转换均直接在您本地浏览器的内存中运行。本工具完全不使用任何数据库或外部服务器，您的照片和个人隐私数据绝不会被上传、存储或跟踪。",
     themeToggleTitle: "切换主题 (深色 / 浅色)",
     langToggleTitle: "切换语言",
+    avifUnsupported: "当前浏览器暂不支持直接进行AVIF编码。请使用最新版Chrome/Edge或选择WEBP格式。",
+    gifUnsupported: "当前浏览器不支持为此图像生成GIF格式。",
     categories: {
       web: "网页与数字标准",
       photo: "相机与RAW专业摄影",
@@ -227,6 +233,8 @@ export const translations = {
     privacyDesc: "Toda la conversión se procesa directamente en la memoria local (RAM) de tu navegador. Esta herramienta no utiliza ninguna base de datos ni servidor externo, por lo que tus fotos y datos privados nunca se cargan, almacenan ni rastrean.",
     themeToggleTitle: "Cambiar Tema (Oscuro / Claro)",
     langToggleTitle: "Cambiar Idioma",
+    avifUnsupported: "Tu navegador aún no admite la codificación directa de AVIF. Usa Google Chrome / Microsoft Edge o elige WEBP.",
+    gifUnsupported: "Tu navegador no admite la codificación GIF para esta imagen.",
     categories: {
       web: "Estándares Web y Digitales",
       photo: "Cámara y Fotografía RAW",
@@ -288,6 +296,8 @@ export const translations = {
     privacyDesc: "تتم جميع عمليات تحويل الصور مباشرة في ذاكرة المتصفح المحلية (RAM). تعمل هذه الأداة بدون أي قاعدة بيانات أو خادم خارجي، مما يعني أن صورك وبياناتك الشخصية لا يتم رفعها أو تخزينها أو تتبعها أبداً.",
     themeToggleTitle: "تبديل المظهر (داكن / فاتح)",
     langToggleTitle: "تغيير اللغة",
+    avifUnsupported: "متصفحك لا يدعم ترميز AVIF المباشر حالياً. يرجى استخدام Google Chrome أو Microsoft Edge أو اختيار WEBP.",
+    gifUnsupported: "متصفحك لا يدعم إنشاء تنسيق GIF لهذه الصورة.",
     categories: {
       web: "معايير الويب والرقمية",
       photo: "الكاميرا والتصوير الاحترافي RAW",
@@ -349,6 +359,8 @@ export const translations = {
     privacyDesc: "Toute la conversion s'exécute directement dans la mémoire locale (RAM) de votre navigateur. Cet outil fonctionne sans aucune base de données ni serveur externe : vos photos et données personnelles ne sont jamais téléversées, stockées ou suivies.",
     themeToggleTitle: "Basculer le thème (Sombre / Clair)",
     langToggleTitle: "Changer de langue",
+    avifUnsupported: "Votre navigateur ne prend pas en charge l'encodage direct AVIF. Veuillez utiliser Google Chrome / Microsoft Edge ou sélectionner WEBP.",
+    gifUnsupported: "Votre navigateur ne prend pas en charge l'encodage GIF pour cette image.",
     categories: {
       web: "Standards Web & Numériques",
       photo: "Appareil Photo & RAW Pro",
@@ -410,6 +422,8 @@ export const translations = {
     privacyDesc: "すべての画像変換処理は、お使いのブラウザと端末のメモリ(RAM)上で直接実行されます。本ツールはデータベースや外部サーバーを一切使用しないため、写真や個人データが送信、保存、または追跡されることは絶対にありません。",
     themeToggleTitle: "テーマ切替 (ダーク / ライト)",
     langToggleTitle: "言語の変更",
+    avifUnsupported: "お使いのブラウザはAVIFの直接エンコードに対応していません。最新のGoogle Chrome / Microsoft Edgeを使用するか、WEBPを選択してください。",
+    gifUnsupported: "お使いのブラウザはこの画像のGIF生成に対応していません。",
     categories: {
       web: "Web・デジタル標準形式",
       photo: "カメラ＆一眼RAW写真",
@@ -471,6 +485,8 @@ export const translations = {
     privacyDesc: "Toda a conversão de imagens ocorre diretamente na memória local (RAM) do seu navegador. Esta ferramenta não possui banco de dados nem servidor externo, garantindo que suas fotos e dados pessoais nunca sejam enviados, armazenados ou rastreados.",
     themeToggleTitle: "Alternar Tema (Escuro / Claro)",
     langToggleTitle: "Mudar Idioma",
+    avifUnsupported: "Seu navegador ainda não suporta codificação direta em AVIF. Use o Google Chrome / Microsoft Edge ou escolha WEBP.",
+    gifUnsupported: "Seu navegador não suporta codificação GIF para esta imagem.",
     categories: {
       web: "Padrões Web e Digitais",
       photo: "Câmeras e Fotografia RAW",

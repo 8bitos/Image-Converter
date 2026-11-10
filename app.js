@@ -7,7 +7,9 @@ import {
   canvasToSvgBlob, 
   canvasToPdfBlob,
   canvasToWbmpBlob,
-  canvasToDngBlob
+  canvasToDngBlob,
+  canvasToAvifBlob,
+  canvasToGifBlob
 } from './encoders.js';
 import { getFunFacts } from './funfacts.js';
 import { translations, formatCategories } from './i18n.js';
@@ -703,14 +705,18 @@ async function convertItem(item) {
     } else if (targetFormat === 'webp') {
       blob = await new Promise(res => canvas.toBlob(res, 'image/webp', 1.0));
     } else if (targetFormat === 'avif') {
-      blob = await new Promise(res => canvas.toBlob(res, 'image/avif', 1.0));
-      if (!blob || blob.type !== 'image/avif') {
-        blob = await new Promise(res => canvas.toBlob(res, 'image/webp', 1.0));
+      try {
+        blob = await canvasToAvifBlob(canvas);
+      } catch (err) {
+        const t = translations[currentLang] || translations.en;
+        throw new Error(t.avifUnsupported || 'Browser Anda belum mendukung encoder AVIF langsung. Gunakan Chrome/Edge atau pilih WEBP.');
       }
     } else if (targetFormat === 'gif') {
-      blob = await new Promise(res => canvas.toBlob(res, 'image/gif'));
-      if (!blob || blob.type !== 'image/gif') {
-        blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+      try {
+        blob = await canvasToGifBlob(canvas);
+      } catch (err) {
+        const t = translations[currentLang] || translations.en;
+        throw new Error(t.gifUnsupported || 'Browser Anda belum mendukung pembuatan format GIF.');
       }
     } else if (targetFormat === 'pdf') {
       blob = await canvasToPdfBlob(canvas);

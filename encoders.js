@@ -391,3 +391,81 @@ export async function canvasToPdfBlob(canvas) {
   
   return new Blob(chunks, { type: 'application/pdf' });
 }
+
+let avifEncoderModule = null;
+
+/**
+ * Encodes Canvas to genuine AVIF using WebCodecs (libaom/av01) or native canvas
+ */
+export async function canvasToAvifBlob(canvas) {
+  // Method 1: WebCodecs AVIF Encoder
+  try {
+    if (!avifEncoderModule) {
+      avifEncoderModule = await import('https://cdn.jsdelivr.net/npm/@browser-mc/webcodecs-avif/+esm');
+    }
+    if (avifEncoderModule && avifEncoderModule.encodeImageToAvif) {
+      const avifBytes = await avifEncoderModule.encodeImageToAvif(canvas, { quality: 1.0 });
+      if (avifBytes && avifBytes.byteLength > 0) {
+        return new Blob([avifBytes], { type: 'image/avif' });
+      }
+    }
+  } catch (err) {
+    console.warn('WebCodecs AVIF encoder not supported:', err);
+  }
+
+  // Method 2: Native canvas toBlob (if browser supports AVIF encoding)
+  const nativeBlob = await new Promise(res => {
+    try {
+      canvas.toBlob(res, 'image/avif', 1.0);
+    } catch {
+      res(null);
+    }
+  });
+
+  if (nativeBlob && nativeBlob.type === 'image/avif') {
+    return nativeBlob;
+  }
+
+  throw new Error('AVIF_UNSUPPORTED');
+}
+
+let gifencModule = null;
+
+/**
+ * Encodes Canvas to genuine 8-bit palette GIF
+ */
+export async function canvasToGifBlob(canvas) {
+  try {
+    if (!gifencModule) {
+      gifencModule = await import('https://unpkg.com/gifenc');
+    }
+    if (gifencModule && gifencModule.GIFEncoder) {
+      const { GIFEncoder, quantize, applyPalette } = gifencModule;
+      const ctx = canvas.getContext('2d');
+      const { data, width, height } = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const palette = quantize(data, 256);
+      const index = applyPalette(data, palette);
+      const encoder = GIFEncoder();
+      encoder.writeFrame(index, width, height, { palette });
+      encoder.finish();
+      const bytes = encoder.bytes();
+      return new Blob([bytes], { type: 'image/gif' });
+    }
+  } catch (err) {
+    console.warn('gifenc module error, trying native canvas:', err);
+  }
+
+  const nativeBlob = await new Promise(res => {
+    try {
+      canvas.toBlob(res, 'image/gif');
+    } catch {
+      res(null);
+    }
+  });
+
+  if (nativeBlob && nativeBlob.type === 'image/gif') {
+    return nativeBlob;
+  }
+
+  throw new Error('GIF_UNSUPPORTED');
+}
