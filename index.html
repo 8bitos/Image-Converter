@@ -53,19 +53,12 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,300..800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
   <!-- Google Material Symbols Outlined -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
 
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
-  <!-- JSZip for Bulk Download -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  
-  <!-- heic2any for iPhone HEIC images -->
-  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
-
-  <!-- UTIF.js for TIFF images -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/utif/3.1.0/UTIF.min.js"></script>
+  <!-- Core External Libraries (Deferred for non-blocking mobile render) -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/utif/3.1.0/UTIF.min.js"></script>
 
   <style>
     .material-symbols-outlined {
@@ -255,6 +248,58 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(125, 135, 150, 0.28); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(125, 135, 150, 0.45); }
+
+    /* Mobile Performance Boost & Anti-Lag */
+    @media (max-width: 768px) {
+      body {
+        background-attachment: scroll !important;
+        background-image: none !important;
+      }
+      html.dark body {
+        background-attachment: scroll !important;
+        background-image: none !important;
+      }
+
+      /* Disable heavy multi-pass GPU backdrop-filters on mobile */
+      .liquid-glass,
+      .liquid-dropzone,
+      header,
+      #mobile-action-bar,
+      #lang-menu {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+
+      /* Solid, crisp high-performance surfaces on mobile */
+      :root {
+        --glass-surface: #ffffff;
+      }
+      html.dark {
+        --glass-surface: #0f172a;
+      }
+      header {
+        background-color: #ffffff !important;
+      }
+      html.dark header {
+        background-color: #0b0f19 !important;
+      }
+      #mobile-action-bar {
+        background-color: #ffffff !important;
+      }
+      html.dark #mobile-action-bar {
+        background-color: #0b0f19 !important;
+      }
+
+      /* Confine paint / reflow boundary on image queue */
+      #queue-list {
+        contain: content;
+      }
+
+      /* Remove extra pseudo elements to reduce compositor layer count */
+      .liquid-glass::before {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body class="selection:bg-sky-500/25 selection:text-sky-900 dark:selection:text-sky-200">

@@ -217,6 +217,15 @@ function initFunFactCarousel() {
   funfactCard.addEventListener('mouseleave', () => {
     isFactPaused = false;
   });
+
+  // Pause when tab/screen is hidden to save mobile CPU/battery
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopFactTimer();
+    } else {
+      startFactTimer();
+    }
+  });
 }
 
 function showFact(index, animate = true) {
@@ -370,6 +379,7 @@ async function handleNewFiles(files) {
       originalUrl: URL.createObjectURL(file),
       previewBlob: null,
       previewUrl: null,
+      thumbUrl: null,
       heicPreviewReady: false,
       isHeicLoading: isHeic(file.name),
       rawPreviewReady: false,
@@ -412,18 +422,20 @@ async function generateHeicPreview(item) {
 
       // Extract natural dimensions
       const img = new Image();
+      img.decoding = 'async';
       img.onload = () => {
         item.width = img.naturalWidth;
         item.height = img.naturalHeight;
         item.isHeicLoading = false;
-        renderQueue();
+        createQuickThumb(item, img);
+        renderQueueDebounced();
       };
       img.src = item.previewUrl;
     }
   } catch (err) {
     console.warn('HEIC preview decode error:', err);
     item.isHeicLoading = false;
-    renderQueue();
+    renderQueueDebounced();
   }
 }
 
@@ -436,17 +448,19 @@ async function generateRawPreview(item) {
     item.rawPreviewReady = true;
 
     const img = new Image();
+    img.decoding = 'async';
     img.onload = () => {
       item.width = img.naturalWidth;
       item.height = img.naturalHeight;
       item.isRawLoading = false;
-      renderQueue();
+      createQuickThumb(item, img);
+      renderQueueDebounced();
     };
     img.src = item.previewUrl;
   } catch (err) {
     console.warn('RAW preview extraction error:', err);
     item.isRawLoading = false;
-    renderQueue();
+    renderQueueDebounced();
   }
 }
 
@@ -504,12 +518,56 @@ async function extractRawImage(file) {
   throw new Error('Format RAW tidak memiliki preview terintegrasi.');
 }
 
+let renderRafId = null;
+function renderQueueDebounced() {
+  if (renderRafId) cancelAnimationFrame(renderRafId);
+  renderRafId = requestAnimationFrame(() => {
+    renderQueue();
+  });
+}
+
+// Generate lightweight thumbnail (max 100x100) to avoid decoding massive 48MP phone images in DOM
+function createQuickThumb(item, img) {
+  try {
+    const maxDim = 100;
+    let tw = img.naturalWidth;
+    let th = img.naturalHeight;
+    if (!tw || !th) return;
+
+    if (tw > maxDim || th > maxDim) {
+      if (tw > th) {
+        th = Math.round((th * maxDim) / tw);
+        tw = maxDim;
+      } else {
+        tw = Math.round((tw * maxDim) / th);
+        th = maxDim;
+      }
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = tw;
+    canvas.height = th;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, tw, th);
+    canvas.toBlob((blob) => {
+      if (blob) {
+        if (item.thumbUrl) URL.revokeObjectURL(item.thumbUrl);
+        item.thumbUrl = URL.createObjectURL(blob);
+        renderQueueDebounced();
+      }
+    }, 'image/jpeg', 0.7);
+  } catch (e) {
+    // Non-critical, fallback to displayUrl
+  }
+}
+
 function detectDimensions(item) {
   const img = new Image();
+  img.decoding = 'async';
   img.onload = () => {
     item.width = img.naturalWidth;
     item.height = img.naturalHeight;
-    renderQueue();
+    createQuickThumb(item, img);
+    renderQueueDebounced();
   };
   img.src = item.originalUrl;
 }
@@ -524,7 +582,7 @@ function updateQueueUI() {
     emptyPlaceholder.classList.remove('hidden');
     queueCount.textContent = '';
   }
-  renderQueue();
+  renderQueueDebounced();
 }
 
 // Render Conversion Queue with Google Material Symbols & i18n
@@ -548,7 +606,7 @@ function renderQueue() {
     thumbWrapper.title = t.previewBtnTitle;
     thumbWrapper.onclick = () => openPreviewModal(item);
 
-    const displayUrl = item.convertedUrl || item.previewUrl || item.originalUrl;
+    const displayUrl = item.thumbUrl || item.convertedUrl || item.previewUrl || item.originalUrl;
 
     if (item.isHeicLoading && !item.previewUrl) {
       thumbWrapper.innerHTML = `
@@ -566,6 +624,8 @@ function renderQueue() {
       const img = document.createElement('img');
       img.src = displayUrl;
       img.className = 'w-full h-full object-cover';
+      img.loading = 'lazy';
+      img.decoding = 'async';
       thumbWrapper.appendChild(img);
     }
 
@@ -980,14 +1040,18 @@ async function downloadAllZip() {
 
 function removeFile(index) {
   const [removed] = filesQueue.splice(index, 1);
-  if (removed.originalUrl) URL.revokeObjectURL(removed.originalUrl);
-  if (removed.previewUrl) URL.revokeObjectURL(removed.previewUrl);
-  if (removed.convertedUrl) URL.revokeObjectURL(removed.convertedUrl);
+  if (removed) {
+    if (removed.thumbUrl) URL.revokeObjectURL(removed.thumbUrl);
+    if (removed.originalUrl) URL.revokeObjectURL(removed.originalUrl);
+    if (removed.previewUrl) URL.revokeObjectURL(removed.previewUrl);
+    if (removed.convertedUrl) URL.revokeObjectURL(removed.convertedUrl);
+  }
   updateQueueUI();
 }
 
 function clearAll() {
   filesQueue.forEach(item => {
+    if (item.thumbUrl) URL.revokeObjectURL(item.thumbUrl);
     if (item.originalUrl) URL.revokeObjectURL(item.originalUrl);
     if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
     if (item.convertedUrl) URL.revokeObjectURL(item.convertedUrl);
