@@ -9,7 +9,7 @@ export const formatCategories = {
 
 export const translations = {
   id: {
-    title: "Image Converter",
+    title: "8BitShiftIMG",
     modeLabel: "Mode Format:",
     modeBatchHint: "(Semua file otomatis mengikuti format yang sama)",
     modeCustomHint: "(Pilih format sendiri-sendiri pada tiap baris di bawah)",
@@ -72,7 +72,7 @@ export const translations = {
     }
   },
   en: {
-    title: "Image Converter",
+    title: "8BitShiftIMG",
     modeLabel: "Format Mode:",
     modeBatchHint: "(All files automatically follow the same format)",
     modeCustomHint: "(Select format independently for each row below)",
@@ -135,7 +135,7 @@ export const translations = {
     }
   },
   zh: {
-    title: "图片格式转换器",
+    title: "8BitShiftIMG",
     modeLabel: "格式模式：",
     modeBatchHint: "(所有文件将统一转换为相同格式)",
     modeCustomHint: "(可以在下方单独选择每张图片的格式)",
@@ -198,7 +198,7 @@ export const translations = {
     }
   },
   es: {
-    title: "Convertidor de Imágenes",
+    title: "8BitShiftIMG",
     modeLabel: "Modo de formato:",
     modeBatchHint: "(Todos los archivos seguirán el mismo formato)",
     modeCustomHint: "(Elige el formato individualmente abajo)",
@@ -261,7 +261,7 @@ export const translations = {
     }
   },
   ar: {
-    title: "محول الصور",
+    title: "8BitShiftIMG",
     modeLabel: "نمط التنسيق:",
     modeBatchHint: "(جميع الملفات ستتبع نفس التنسيق)",
     modeCustomHint: "(اختر التنسيق بشكل مستقل لكل صورة)",
@@ -324,7 +324,7 @@ export const translations = {
     }
   },
   fr: {
-    title: "Convertisseur d'Images",
+    title: "8BitShiftIMG",
     modeLabel: "Mode de format :",
     modeBatchHint: "(Tous les fichiers adopteront le même format)",
     modeCustomHint: "(Choisissez le format par image ci-dessous)",
@@ -387,7 +387,7 @@ export const translations = {
     }
   },
   ja: {
-    title: "画像フォーマット変換",
+    title: "8BitShiftIMG",
     modeLabel: "変換モード：",
     modeBatchHint: "(すべての画像を一括で同じ形式に変換)",
     modeCustomHint: "(画像ごとにお好みの形式を個別に選択)",
@@ -450,7 +450,7 @@ export const translations = {
     }
   },
   pt: {
-    title: "Conversor de Imagens",
+    title: "8BitShiftIMG",
     modeLabel: "Modo de Formato:",
     modeBatchHint: "(Todos os arquivos seguirão o mesmo formato)",
     modeCustomHint: "(Escolha o formato individualmente abaixo)",

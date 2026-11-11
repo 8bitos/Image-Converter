@@ -1,4 +1,4 @@
-# 🌐 Image Converter — 100% Client-Side Universal Image Converter
+# 🌐 8BitShiftIMG — 100% Client-Side Universal Image Converter
 
 > **Konversi format gambar instan, aman, dan beresolusi penuh langsung di peramban web tanpa server atau database.**
 
