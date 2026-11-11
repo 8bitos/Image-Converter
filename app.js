@@ -39,6 +39,13 @@ const downloadZipBtn = document.getElementById('download-zip-btn');
 const clearAllBtn = document.getElementById('clear-all-btn');
 const emptyPlaceholder = document.getElementById('empty-placeholder');
 
+// Mobile Action Bar Elements
+const mobileActionBar = document.getElementById('mobile-action-bar');
+const mobileConvertBtn = document.getElementById('mobile-convert-btn');
+const mobileDownloadBtn = document.getElementById('mobile-download-btn');
+const mobileBtnTextConvert = document.getElementById('mobile-btn-text-convert');
+const mobileBtnTextZip = document.getElementById('mobile-btn-text-zip');
+
 // Modal Elements
 const modal = document.getElementById('preview-modal');
 const modalClose = document.getElementById('modal-close');
@@ -155,6 +162,8 @@ function applyLanguage(lang) {
   setText('queue-title', t.queueTitle);
   setText('btn-text-convert-all', t.convertAllBtn);
   setText('btn-text-download-zip', t.downloadZipBtn);
+  setText('mobile-btn-text-convert', t.convertAllBtn);
+  setText('mobile-btn-text-zip', t.downloadZipBtn);
   setText('empty-queue-text', t.emptyQueue);
   setText('funfact-title-label', t.funFactTitle);
   setText('privacy-title-label', t.privacyTitle);
@@ -306,6 +315,8 @@ function initEvents() {
   convertAllBtn.addEventListener('click', convertAll);
   clearAllBtn.addEventListener('click', clearAll);
   downloadZipBtn.addEventListener('click', downloadAllZip);
+  if (mobileConvertBtn) mobileConvertBtn.addEventListener('click', convertAll);
+  if (mobileDownloadBtn) mobileDownloadBtn.addEventListener('click', downloadAllZip);
 
   // Modal close
   modalClose.addEventListener('click', closeModal);
@@ -523,14 +534,17 @@ function renderQueue() {
 
   filesQueue.forEach((item, index) => {
     const row = document.createElement('div');
-    row.className = 'liquid-glass flex flex-col sm:flex-row items-stretch sm:items-center justify-between p-3.5 sm:p-4 rounded-xl border border-black/[0.08] dark:border-white/10 gap-3 sm:gap-4 transition-all hover:border-sky-500/40 shadow-sm';
+    row.className = 'liquid-glass flex flex-col sm:flex-row items-stretch sm:items-center justify-between p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-black/[0.08] dark:border-white/10 gap-2 sm:gap-4 transition-all hover:border-sky-500/40 shadow-sm';
 
-    // Left: Thumbnail + Name + Original Size
+    // Top Row on Mobile / Left Column on Desktop
     const leftCol = document.createElement('div');
-    leftCol.className = 'flex items-center gap-3 w-full sm:w-5/12 min-w-0';
+    leftCol.className = 'flex items-center justify-between sm:justify-start gap-2.5 w-full sm:w-5/12 min-w-0';
+
+    const infoWrapper = document.createElement('div');
+    infoWrapper.className = 'flex items-center gap-2.5 min-w-0 flex-1';
 
     const thumbWrapper = document.createElement('div');
-    thumbWrapper.className = 'w-11 h-11 sm:w-12 sm:h-12 rounded-lg bg-black/[0.04] dark:bg-black/40 flex-shrink-0 flex items-center justify-center overflow-hidden border border-black/[0.08] dark:border-white/10 cursor-pointer relative group';
+    thumbWrapper.className = 'w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-black/[0.04] dark:bg-black/40 flex-shrink-0 flex items-center justify-center overflow-hidden border border-black/[0.08] dark:border-white/10 cursor-pointer relative group';
     thumbWrapper.title = t.previewBtnTitle;
     thumbWrapper.onclick = () => openPreviewModal(item);
 
@@ -557,7 +571,7 @@ function renderQueue() {
 
     const hoverOverlay = document.createElement('div');
     hoverOverlay.className = 'absolute inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-sky-300 text-xs font-medium';
-    hoverOverlay.innerHTML = `<span class="material-symbols-outlined text-[18px]">visibility</span>`;
+    hoverOverlay.innerHTML = `<span class="material-symbols-outlined text-[16px] sm:text-[18px]">visibility</span>`;
     thumbWrapper.appendChild(hoverOverlay);
 
     const infoDiv = document.createElement('div');
@@ -568,24 +582,33 @@ function renderQueue() {
     nameP.textContent = item.name;
 
     const metaP = document.createElement('p');
-    metaP.className = 'text-[11px] text-slate-600 dark:text-slate-400 flex items-center gap-1.5 mt-0.5';
+    metaP.className = 'text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-0.5';
     metaP.innerHTML = `
-      <span class="px-1.5 py-0.5 rounded bg-black/[0.05] dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.06] uppercase font-mono text-[10px] text-slate-800 dark:text-slate-300 font-semibold">${item.originalExt || 'IMG'}</span>
+      <span class="px-1.5 py-0.2 rounded bg-black/[0.05] dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.06] uppercase font-mono text-[9px] sm:text-[10px] text-slate-800 dark:text-slate-300 font-semibold">${item.originalExt || 'IMG'}</span>
       <span>${formatBytes(item.originalSize)}</span>
       ${item.width ? `<span>• ${item.width}×${item.height}px</span>` : ''}
     `;
 
     infoDiv.appendChild(nameP);
     infoDiv.appendChild(metaP);
-    leftCol.appendChild(thumbWrapper);
-    leftCol.appendChild(infoDiv);
+    infoWrapper.appendChild(thumbWrapper);
+    infoWrapper.appendChild(infoDiv);
+    leftCol.appendChild(infoWrapper);
 
-    // Center: Target Format Selector (Per-Row) + Status
+    // Mobile-only Quick Close / Delete button on the top right
+    const mobileRemoveBtn = document.createElement('button');
+    mobileRemoveBtn.className = 'sm:hidden btn-liquid-ghost text-slate-400 hover:text-rose-500 p-1 rounded-lg flex-shrink-0';
+    mobileRemoveBtn.title = t.removeBtnTitle;
+    mobileRemoveBtn.innerHTML = `<span class="material-symbols-outlined text-[17px]">close</span>`;
+    mobileRemoveBtn.onclick = () => removeFile(index);
+    leftCol.appendChild(mobileRemoveBtn);
+
+    // Bottom Row on Mobile / Center Column on Desktop
     const centerCol = document.createElement('div');
-    centerCol.className = 'flex items-center justify-between sm:justify-center gap-2.5 w-full sm:w-4/12';
+    centerCol.className = 'flex items-center justify-between sm:justify-center gap-2 w-full sm:w-4/12 pt-2 sm:pt-0 border-t sm:border-t-0 border-black/[0.05] dark:border-white/[0.05]';
 
     const formatSelect = document.createElement('select');
-    formatSelect.className = 'glass-input text-xs rounded-xl px-2.5 py-1.5 font-medium cursor-pointer text-slate-800 dark:text-slate-200';
+    formatSelect.className = 'glass-input text-[11px] sm:text-xs rounded-lg sm:rounded-xl px-2 sm:px-2.5 py-1 sm:py-1.5 font-medium cursor-pointer text-slate-800 dark:text-slate-200 max-w-[125px] sm:max-w-none';
     formatSelect.disabled = item.isConverting;
     
     for (const [catKey, formatKeys] of Object.entries(formatCategories)) {
@@ -614,15 +637,13 @@ function renderQueue() {
       }
     });
 
-    centerCol.appendChild(formatSelect);
-
     // Status / Result Size
     const statusDiv = document.createElement('div');
-    statusDiv.className = 'text-xs text-right sm:text-left';
+    statusDiv.className = 'text-[11px] sm:text-xs text-center flex-1 sm:flex-initial';
 
     if (item.isConverting) {
-      statusDiv.innerHTML = `<span class="inline-flex items-center gap-1.5 text-sky-600 dark:text-sky-400 font-medium animate-pulse text-xs">
-        <svg class="animate-spin h-3.5 w-3.5 text-sky-600 dark:text-sky-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+      statusDiv.innerHTML = `<span class="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 font-medium animate-pulse text-[11px]">
+        <svg class="animate-spin h-3 w-3 text-sky-600 dark:text-sky-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
         ${t.processingStatus}
       </span>`;
     } else if (item.isConverted) {
@@ -631,22 +652,43 @@ function renderQueue() {
       const isSaved = percent < 0;
 
       statusDiv.innerHTML = `
-        <div class="font-mono font-medium text-slate-800 dark:text-slate-200 text-xs">${formatBytes(item.targetSize)}</div>
-        <div class="text-[10px] font-semibold ${isSaved ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}">
+        <div class="font-mono font-medium text-slate-800 dark:text-slate-200 text-[11px] sm:text-xs">${formatBytes(item.targetSize)}</div>
+        <div class="text-[9px] sm:text-[10px] font-semibold ${isSaved ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}">
           ${isSaved ? `${t.savedPercent} ${Math.abs(percent)}%` : `+${percent}%`}
         </div>
       `;
     } else if (item.error) {
-      statusDiv.innerHTML = `<span class="text-rose-500 dark:text-rose-400 font-medium text-xs" title="${item.error}">${t.failedStatus}</span>`;
+      statusDiv.innerHTML = `<span class="text-rose-500 dark:text-rose-400 font-medium text-[11px]" title="${item.error}">${t.failedStatus}</span>`;
     } else {
-      statusDiv.innerHTML = `<span class="text-slate-400 dark:text-slate-500 font-mono text-[11px]">${t.readyStatus}</span>`;
+      statusDiv.innerHTML = `<span class="text-slate-400 dark:text-slate-500 font-mono text-[10px] sm:text-[11px]">${t.readyStatus}</span>`;
     }
 
+    centerCol.appendChild(formatSelect);
     centerCol.appendChild(statusDiv);
 
-    // Right: Action Buttons (Convert / Download / Delete)
+    // Mobile-only Action Button in the bottom row
+    const mobileActionDiv = document.createElement('div');
+    mobileActionDiv.className = 'sm:hidden flex items-center flex-shrink-0';
+
+    if (item.isConverted) {
+      const mDlBtn = document.createElement('button');
+      mDlBtn.className = 'btn-liquid-success px-2.5 py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1';
+      mDlBtn.innerHTML = `<span class="material-symbols-outlined text-[15px]">download</span>`;
+      mDlBtn.onclick = () => downloadSingle(item);
+      mobileActionDiv.appendChild(mDlBtn);
+    } else {
+      const mConvBtn = document.createElement('button');
+      mConvBtn.className = 'btn-liquid-primary px-2.5 py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1 disabled:opacity-40';
+      mConvBtn.disabled = item.isConverting;
+      mConvBtn.innerHTML = `<span class="material-symbols-outlined text-[15px]">play_arrow</span>`;
+      mConvBtn.onclick = () => convertItem(item);
+      mobileActionDiv.appendChild(mConvBtn);
+    }
+    centerCol.appendChild(mobileActionDiv);
+
+    // Desktop-only Right Column: Action Buttons + Delete
     const rightCol = document.createElement('div');
-    rightCol.className = 'flex items-center justify-end gap-2 w-full sm:w-3/12';
+    rightCol.className = 'hidden sm:flex items-center justify-end gap-2 sm:w-3/12';
 
     if (item.isConverted) {
       const dlBtn = document.createElement('button');
@@ -679,6 +721,18 @@ function renderQueue() {
 
   const hasConverted = filesQueue.some(f => f.isConverted);
   downloadZipBtn.disabled = !hasConverted;
+  if (mobileDownloadBtn) mobileDownloadBtn.disabled = !hasConverted;
+
+  // Manage Mobile Action Bar visibility
+  if (mobileActionBar) {
+    if (filesQueue.length > 0) {
+      mobileActionBar.classList.remove('translate-y-full');
+      mobileActionBar.classList.add('translate-y-0');
+    } else {
+      mobileActionBar.classList.remove('translate-y-0');
+      mobileActionBar.classList.add('translate-y-full');
+    }
+  }
 }
 
 // 1:1 Conversion without Quality Degradation (Lossless/High-Fidelity)

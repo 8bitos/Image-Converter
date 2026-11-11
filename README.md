@@ -40,6 +40,10 @@
   Mengikuti preferensi sistem operasi pengguna secara otomatis dengan tampilan *Liquid Glass* berkontras tinggi agar tetap tajam dan terbaca jelas di tema terang.
 - 💡 **50 Fun Facts Seputar Format Gambar**:
   Menyajikan edukasi trivia dan sejarah format gambar yang berotasi otomatis setiap 10 detik.
+- 📱 **Progressive Web App (PWA) & Offline Ready**:
+  Dapat di-install langsung ke homescreen Android, iOS, Windows, atau macOS. Berjalan cepat dan dapat digunakan secara offline via Service Worker.
+- 🖐️ **Antarmuka Mobile Ringkas (Compact & One-Hand Friendly)**:
+  Desain mode HP yang padat tanpa ruang kosong berlebih, tombol aksi mengambang (*sticky bottom bar*), dan baris antrean 2 tingkat yang nyaman digunakan dengan satu tangan.
 - 📦 **Ekspor Batch ZIP & Paste Clipboard (`Ctrl + V`)**:
   Download seluruh hasil konversi sekaligus dalam satu arsip `.zip`, atau tempel gambar tangkapan layar langsung menggunakan shortcut keyboard.
 
@@ -73,6 +77,12 @@ Klik kanan pada file `index.html` dan pilih **Open with Live Server**.
 ├── encoders.js      # Binary encoder murni (BMP, ICO, CUR, TGA, PPM, WBMP, DNG, PDF, SVG)
 ├── funfacts.js      # 50 Trivia format gambar dalam 8 bahasa
 ├── i18n.js          # Terjemahan kamus UI & kategori format dalam 8 bahasa
+├── sw.js            # PWA Service Worker (offline cache & stale-while-revalidate)
+├── manifest.json    # Web App Manifest PWA
+├── icon.svg         # Vektor master icon PWA
+├── icon-192.png     # Maskable icon PWA 192x192
+└── icon-512.png     # Splash icon PWA 512x512
+```
 └── README.md        # Dokumentasi proyek
 ```
 
